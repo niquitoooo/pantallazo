@@ -33,9 +33,10 @@ jobs:
         run: |
           $version = '${{ github.ref_name }}'.TrimStart('v')
           $lines = Get-Content CHANGELOG.md -Encoding UTF8
-          $start = [array]::FindIndex($lines, [Predicate[string]] { param($l) $l -like "## [$version]*" })
+          # StartsWith y no -like: en -like los corchetes de "[1.0.0]" son comodines.
+          $start = [array]::FindIndex($lines, [Predicate[string]] { param($l) $l.StartsWith("## [$version]") })
           if ($start -lt 0) { throw "CHANGELOG.md no tiene la sección [$version]" }
-          $end = [array]::FindIndex($lines, $start + 1, [Predicate[string]] { param($l) $l -like '## *' -or $l -like '`[*`]: *' })
+          $end = [array]::FindIndex($lines, $start + 1, [Predicate[string]] { param($l) $l.StartsWith('## ') -or $l -match '^\[[^\]]+\]:' })
           if ($end -lt 0) { $end = $lines.Count }
           $lines[($start + 1)..($end - 1)] | Set-Content notas.md -Encoding utf8
 
