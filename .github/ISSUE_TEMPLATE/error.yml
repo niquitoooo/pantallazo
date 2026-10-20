@@ -1,0 +1,40 @@
+name: Reportar un error
+description: Algo no funciona como debería.
+labels: [bug]
+body:
+  - type: textarea
+    id: que-paso
+    attributes:
+      label: Qué pasó
+      description: Qué hiciste, qué esperabas que pasara y qué pasó en cambio.
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Abrir Pantallazo
+        2. Apretar Ctrl + Impr Pant
+        3. …
+  - type: input
+    id: version
+    attributes:
+      label: Versión de Pantallazo
+      description: Está en Configuración → Acerca de.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Versión de Windows
+      placeholder: "Windows 11 24H2"
+  - type: textarea
+    id: registro
+    attributes:
+      label: Registro (opcional)
+      description: >-
+        Configuración → Acerca de → Abrir registros. Pegá solo las líneas cercanas al error y revisalas antes:
+        pueden tener rutas de tu PC.
+      render: text

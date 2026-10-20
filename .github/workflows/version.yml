@@ -1,0 +1,49 @@
+name: Versión
+
+# Al subir una etiqueta vX.Y.Z se compila, se prueba y se publica la versión con el instalador y el portable.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    name: Instalador, portable y versión
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Tests
+        run: dotnet test Pantallazo.slnx -c Release
+
+      - name: Instalador y portable
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          ./scripts/publish.ps1 -Version $version
+
+      - name: Notas de la versión (del CHANGELOG)
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          $lines = Get-Content CHANGELOG.md -Encoding UTF8
+          $start = [array]::FindIndex($lines, [Predicate[string]] { param($l) $l -like "## [$version]*" })
+          if ($start -lt 0) { throw "CHANGELOG.md no tiene la sección [$version]" }
+          $end = [array]::FindIndex($lines, $start + 1, [Predicate[string]] { param($l) $l -like '## *' -or $l -like '`[*`]: *' })
+          if ($end -lt 0) { $end = $lines.Count }
+          $lines[($start + 1)..($end - 1)] | Set-Content notas.md -Encoding utf8
+
+      - name: Publicar la versión
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = '${{ github.ref_name }}'
+          $files = (Get-ChildItem dist/*.exe, dist/*.zip).FullName
+          gh release create $tag $files --title "Pantallazo $($tag.TrimStart('v'))" --notes-file notas.md

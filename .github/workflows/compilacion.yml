@@ -1,0 +1,26 @@
+name: Compilación
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compilar:
+    name: Compilar y probar
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Compilar
+        run: dotnet build Pantallazo.slnx -c Release
+
+      - name: Tests
+        run: dotnet test Pantallazo.slnx -c Release --no-build

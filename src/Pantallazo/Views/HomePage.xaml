@@ -1,0 +1,149 @@
+<UserControl x:Class="Pantallazo.Views.HomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:m3="clr-namespace:Pantallazo.Theming"
+             xmlns:v="clr-namespace:Pantallazo.Views">
+    <UserControl.Resources>
+        <Style x:Key="ShortcutChip" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource M3.Outline}" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="28,24,28,24">
+        <StackPanel MaxWidth="980">
+            <TextBlock Style="{StaticResource M3.HeadlineSmall}" Text="Inicio" />
+            <TextBlock x:Name="StatusText" Style="{StaticResource M3.BodyMedium}" Margin="0,6,0,18"
+                       Foreground="{DynamicResource M3.OnSurfaceVariant}" />
+
+            <!-- Aviso: atajos que no se pudieron registrar / Impr Pant tomada por Recortes -->
+            <Border x:Name="WarningCard" Style="{StaticResource M3.Card}" Background="{DynamicResource M3.TertiaryContainer}"
+                    Margin="0,0,0,18" Visibility="Collapsed">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" Style="{StaticResource M3.Icon}" Text="{x:Static m3:Icons.Warning}" FontSize="20"
+                               VerticalAlignment="Top" Margin="2,2,14,0" Foreground="{DynamicResource M3.OnTertiaryContainer}" />
+                    <StackPanel>
+                        <TextBlock x:Name="WarningTitle" Style="{StaticResource M3.TitleSmall}" Foreground="{DynamicResource M3.OnTertiaryContainer}" />
+                        <TextBlock x:Name="WarningText" Style="{StaticResource M3.BodyMedium}" Margin="0,4,0,10" Foreground="{DynamicResource M3.OnTertiaryContainer}" />
+                        <WrapPanel>
+                            <Button x:Name="FreePrintScreenButton" Style="{StaticResource M3.FilledButton}" Content="Liberar Impr Pant"
+                                    m3:M3.Icon="{x:Static m3:Icons.Unlock}" Margin="0,0,8,0" Click="OnFreePrintScreen" />
+                            <Button Style="{StaticResource M3.TextButton}" Content="Cambiar atajos" Click="OnOpenShortcuts" />
+                        </WrapPanel>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Las tres acciones -->
+            <UniformGrid x:Name="Actions" Columns="3" Margin="-6,0,-6,0">
+                <Button Style="{StaticResource M3.ActionCard}" Margin="6" Click="OnFullScreen" ToolTip="Capturar todos los monitores en una sola imagen">
+                    <StackPanel>
+                        <Border Width="48" Height="48" CornerRadius="24" HorizontalAlignment="Left" Background="{DynamicResource M3.PrimaryContainer}">
+                            <TextBlock Style="{StaticResource M3.Icon}" Text="{x:Static m3:Icons.FullScreen}" FontSize="22" Foreground="{DynamicResource M3.OnPrimaryContainer}" />
+                        </Border>
+                        <TextBlock Style="{StaticResource M3.TitleMedium}" Text="Capturar pantalla completa" Margin="0,16,0,4" />
+                        <TextBlock Style="{StaticResource M3.BodySmall}" Text="Todos los monitores, guardado en PNG." Margin="0,0,0,12" />
+                        <ItemsControl x:Name="FullScreenKeys">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource ShortcutChip}">
+                                        <TextBlock Text="{Binding}" Style="{StaticResource M3.LabelMedium}" Foreground="{DynamicResource M3.OnSurfaceVariant}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource M3.ActionCard}" Margin="6" Click="OnRegion" ToolTip="Elegir una parte de la pantalla">
+                    <StackPanel>
+                        <Border Width="48" Height="48" CornerRadius="24" HorizontalAlignment="Left" Background="{DynamicResource M3.SecondaryContainer}">
+                            <TextBlock Style="{StaticResource M3.Icon}" Text="{x:Static m3:Icons.Region}" FontSize="22" Foreground="{DynamicResource M3.OnSecondaryContainer}" />
+                        </Border>
+                        <TextBlock Style="{StaticResource M3.TitleMedium}" Text="Seleccionar región" Margin="0,16,0,4" />
+                        <TextBlock Style="{StaticResource M3.BodySmall}" Text="Arrastrá o hacé clic en una ventana." Margin="0,0,0,12" />
+                        <ItemsControl x:Name="RegionKeys" ItemTemplate="{Binding ItemTemplate, ElementName=FullScreenKeys}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="RecordCard" Style="{StaticResource M3.ActionCard}" Margin="6" Click="OnRecord">
+                    <StackPanel>
+                        <Border x:Name="RecordIconCircle" Width="48" Height="48" CornerRadius="24" HorizontalAlignment="Left" Background="{DynamicResource M3.TertiaryContainer}">
+                            <TextBlock x:Name="RecordIcon" Style="{StaticResource M3.Icon}" Text="{x:Static m3:Icons.Record}" FontSize="22" Foreground="{DynamicResource M3.OnTertiaryContainer}" />
+                        </Border>
+                        <TextBlock x:Name="RecordTitle" Style="{StaticResource M3.TitleMedium}" Text="Iniciar grabación" Margin="0,16,0,4" />
+                        <TextBlock x:Name="RecordSubtitle" Style="{StaticResource M3.BodySmall}" Text="Video MP4 con el audio elegido." Margin="0,0,0,12" />
+                        <ItemsControl x:Name="RecordKeys" ItemTemplate="{Binding ItemTemplate, ElementName=FullScreenKeys}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+                </Button>
+            </UniformGrid>
+
+            <!-- Recientes -->
+            <DockPanel Margin="0,28,0,10">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Style="{StaticResource M3.TonalButton}" Content="Capturas" m3:M3.Icon="{x:Static m3:Icons.Folder}" Padding="16,0" Margin="0,0,8,0"
+                            Click="OnOpenScreenshots" ToolTip="Abrir la carpeta de capturas" />
+                    <Button Style="{StaticResource M3.TonalButton}" Content="Grabaciones" m3:M3.Icon="{x:Static m3:Icons.Folder}" Padding="16,0"
+                            Click="OnOpenRecordings" ToolTip="Abrir la carpeta de grabaciones" />
+                </StackPanel>
+                <TextBlock Style="{StaticResource M3.TitleMedium}" Text="Recientes" VerticalAlignment="Center" />
+            </DockPanel>
+
+            <Border Style="{StaticResource M3.Card}" Padding="0,8">
+                <Grid>
+                    <TextBlock x:Name="EmptyText" Style="{StaticResource M3.BodyMedium}" Margin="20,14" Foreground="{DynamicResource M3.OnSurfaceVariant}"
+                               Text="Todavía no hay capturas ni grabaciones. Probá con Impr Pant." />
+                    <ItemsControl x:Name="RecentList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid x:Name="Row" Background="Transparent" Height="64" Tag="{Binding}" MouseRightButtonUp="OnItemMenu">
+                                    <Border x:Name="Hover" Background="{DynamicResource M3.OnSurface}" Opacity="0" />
+                                    <DockPanel Margin="16,0,8,0">
+                                        <Border DockPanel.Dock="Left" Width="72" Height="44" CornerRadius="8" ClipToBounds="True"
+                                                Background="{DynamicResource M3.SurfaceContainerHighest}" Margin="0,0,14,0">
+                                            <Grid>
+                                                <TextBlock x:Name="KindIcon" Style="{StaticResource M3.Icon}" Text="{x:Static m3:Icons.Video}"
+                                                           Foreground="{DynamicResource M3.OnSurfaceVariant}" />
+                                                <Image v:Thumbnail.For="{Binding}" Stretch="UniformToFill" />
+                                            </Grid>
+                                        </Border>
+                                        <!-- Las acciones aparecen solo con el mouse encima de la fila (ocupan su lugar igual, así el nombre no salta) -->
+                                        <StackPanel x:Name="Actions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Hidden">
+                                            <Button Style="{StaticResource M3.IconButton}" m3:M3.Icon="{x:Static m3:Icons.Open}" ToolTip="Abrir"
+                                                    Click="OnOpenItem" Tag="{Binding}" />
+                                            <Button Style="{StaticResource M3.IconButton}" m3:M3.Icon="{x:Static m3:Icons.Folder}" ToolTip="Mostrar en la carpeta"
+                                                    Click="OnRevealItem" Tag="{Binding}" />
+                                            <Button Style="{StaticResource M3.IconButton}" m3:M3.Icon="{x:Static m3:Icons.Rename}" ToolTip="Renombrar"
+                                                    Click="OnRenameItem" Tag="{Binding}" AutomationProperties.Name="Renombrar" />
+                                            <Button Style="{StaticResource M3.IconButton}" m3:M3.Icon="{x:Static m3:Icons.Delete}" ToolTip="Eliminar (a la Papelera)"
+                                                    Click="OnDeleteItem" Tag="{Binding}" AutomationProperties.Name="Eliminar" />
+                                        </StackPanel>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource M3.BodyLarge}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                                            <TextBlock Style="{StaticResource M3.BodySmall}">
+                                                <Run Text="{Binding KindText, Mode=OneWay}" /> · <Run Text="{Binding When, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Hover" Property="Opacity" Value="0.05" />
+                                        <Setter TargetName="Actions" Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,16 @@
+# Fines de línea normalizados en el repo; en Windows se escriben como CRLF.
+* text=auto
+
+*.cs      text diff=csharp
+*.xaml    text
+*.csproj  text
+*.slnx    text
+*.md      text
+*.yml     text
+*.json    text
+*.iss     text eol=crlf
+*.ps1     text eol=crlf
+
+*.png     binary
+*.ico     binary
+*.mp4     binary

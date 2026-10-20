@@ -1,0 +1,859 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="clr-namespace:Pantallazo.Theming">
+
+    <!-- ===== Tipografía (escala M3; Segoe UI Variable en lugar de Roboto, que Windows no trae) ===== -->
+    <FontFamily x:Key="M3.Font">Segoe UI Variable Text, Segoe UI</FontFamily>
+    <FontFamily x:Key="M3.DisplayFont">Segoe UI Variable Display, Segoe UI</FontFamily>
+    <FontFamily x:Key="M3.IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+
+    <Style x:Key="M3.Text" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="M3.HeadlineSmall" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontFamily" Value="{StaticResource M3.DisplayFont}" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+    <Style x:Key="M3.TitleLarge" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontFamily" Value="{StaticResource M3.DisplayFont}" />
+        <Setter Property="FontSize" Value="22" />
+    </Style>
+    <Style x:Key="M3.TitleMedium" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="M3.TitleSmall" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="M3.BodyLarge" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style x:Key="M3.BodyMedium" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    <Style x:Key="M3.BodySmall" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurfaceVariant}" />
+    </Style>
+    <Style x:Key="M3.LabelLarge" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style x:Key="M3.LabelMedium" TargetType="TextBlock" BasedOn="{StaticResource M3.Text}">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style x:Key="M3.Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource M3.IconFont}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Anillo de foco M3: 3 px en Secondary, separado 2 px -->
+    <Style x:Key="M3.FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Margin="-3" BorderThickness="3" CornerRadius="23" BorderBrush="{DynamicResource M3.Secondary}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.FocusVisualSquare">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Margin="-3" BorderThickness="3" CornerRadius="15" BorderBrush="{DynamicResource M3.Secondary}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Botones comunes (alto 40, esquinas completas) ===== -->
+    <ControlTemplate x:Key="M3.ButtonTemplate" TargetType="ButtonBase">
+        <Grid x:Name="Root" MinHeight="40" SnapsToDevicePixels="True">
+            <Border x:Name="Container" CornerRadius="20" Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+            <Border x:Name="State" CornerRadius="20" Background="{TemplateBinding Foreground}" Opacity="0" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
+                <TextBlock x:Name="Icon" Style="{StaticResource M3.Icon}" FontSize="18" Margin="0,0,8,0"
+                           Text="{TemplateBinding m3:M3.Icon}" Foreground="{TemplateBinding Foreground}" />
+                <ContentPresenter VerticalAlignment="Center" TextElement.FontSize="14" TextElement.FontWeight="Medium"
+                                  TextElement.Foreground="{TemplateBinding Foreground}" RecognizesAccessKey="True" />
+            </StackPanel>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="m3:M3.Icon" Value="{x:Null}">
+                <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="State" Property="Opacity" Value="0.08" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="State" Property="Opacity" Value="0.10" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="State" Property="Opacity" Value="0.10" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="M3.ButtonBase" TargetType="ButtonBase">
+        <Setter Property="Template" Value="{StaticResource M3.ButtonTemplate}" />
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="Padding" Value="24,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource M3.FocusVisual}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+    <Style x:Key="M3.FilledButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.ButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnPrimary}" />
+    </Style>
+    <Style x:Key="M3.TonalButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.ButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource M3.SecondaryContainer}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSecondaryContainer}" />
+    </Style>
+    <Style x:Key="M3.OutlinedButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.ButtonBase}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource M3.Outline}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style x:Key="M3.TextButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.ButtonBase}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="Padding" Value="12,0" />
+    </Style>
+    <Style x:Key="M3.ErrorButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.ButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource M3.Error}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnError}" />
+    </Style>
+
+    <!-- Botones de la barra de título (como Windows 11: 46 de ancho, alto de la barra, sin esquinas).
+         Tag="hover"/"pressed" lo pone el código para maximizar, que Windows maneja como botón del sistema
+         (por el menú de acomodar ventanas) y no le llegan los eventos del mouse de WPF. -->
+    <Style x:Key="M3.CaptionButton" TargetType="ButtonBase">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Grid Background="Transparent">
+                        <Border x:Name="Fill" Background="{TemplateBinding Background}" />
+                        <Border x:Name="State" Background="{DynamicResource M3.OnSurface}" Opacity="0" />
+                        <TextBlock x:Name="Glyph" Text="{TemplateBinding m3:M3.Icon}" FontFamily="{StaticResource M3.IconFont}" FontSize="10"
+                                   Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="State" Property="Opacity" Value="0.07" /></Trigger>
+                        <Trigger Property="Tag" Value="hover"><Setter TargetName="State" Property="Opacity" Value="0.07" /></Trigger>
+                        <Trigger Property="IsPressed" Value="True"><Setter TargetName="State" Property="Opacity" Value="0.04" /></Trigger>
+                        <Trigger Property="Tag" Value="pressed"><Setter TargetName="State" Property="Opacity" Value="0.04" /></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.CaptionCloseButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.CaptionButton}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#C42B1C" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#C83C30" />
+                <Setter Property="Foreground" Value="#E6FFFFFF" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Botón de ícono estándar (40×40, círculo) -->
+    <Style x:Key="M3.IconButton" TargetType="ButtonBase">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurfaceVariant}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource M3.FocusVisual}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Grid x:Name="Root">
+                        <Ellipse Fill="{TemplateBinding Background}" />
+                        <Ellipse x:Name="State" Fill="{TemplateBinding Foreground}" Opacity="0" />
+                        <TextBlock Style="{StaticResource M3.Icon}" FontSize="16" Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding m3:M3.Icon}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.10" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.TonalIconButton" TargetType="ButtonBase" BasedOn="{StaticResource M3.IconButton}">
+        <Setter Property="Background" Value="{DynamicResource M3.SecondaryContainer}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSecondaryContainer}" />
+    </Style>
+
+    <!-- ===== Tarjetas ===== -->
+    <Style x:Key="M3.Card" TargetType="Border">
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Background" Value="{DynamicResource M3.SurfaceContainer}" />
+    </Style>
+    <Style x:Key="M3.FilledCard" TargetType="Border" BasedOn="{StaticResource M3.Card}">
+        <Setter Property="Background" Value="{DynamicResource M3.SurfaceContainerHighest}" />
+    </Style>
+    <Style x:Key="M3.OutlinedCard" TargetType="Border" BasedOn="{StaticResource M3.Card}">
+        <Setter Property="Background" Value="{DynamicResource M3.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource M3.OutlineVariant}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!-- Tarjeta-acción grande (Inicio): contenido libre, capa de estado -->
+    <Style x:Key="M3.ActionCard" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="{DynamicResource M3.SurfaceContainerHigh}" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource M3.FocusVisualSquare}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="Root">
+                        <Border CornerRadius="16" Background="{TemplateBinding Background}">
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="Shadow" BlurRadius="3" ShadowDepth="1" Opacity="0.18" Direction="270" />
+                            </Border.Effect>
+                        </Border>
+                        <Border x:Name="State" CornerRadius="16" Background="{TemplateBinding Foreground}" Opacity="0" />
+                        <ContentPresenter Margin="20" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.10" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Switch (track 52×32, thumb 16 → 24 con check) ===== -->
+    <Style x:Key="M3.Switch" TargetType="ToggleButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid x:Name="Root" Width="52" Height="32" Background="Transparent">
+                        <Border x:Name="Focus" Margin="-4" CornerRadius="20" BorderThickness="3" BorderBrush="{DynamicResource M3.Secondary}" Visibility="Collapsed" />
+                        <Border x:Name="Track" CornerRadius="16" Background="{DynamicResource M3.SurfaceContainerHighest}"
+                                BorderBrush="{DynamicResource M3.Outline}" BorderThickness="2" />
+                        <Grid x:Name="ThumbHost" Width="32" Height="32" HorizontalAlignment="Left">
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="Move" X="0" />
+                            </Grid.RenderTransform>
+                            <Ellipse x:Name="Halo" Width="40" Height="40" Margin="-4" Fill="{DynamicResource M3.OnSurface}" Opacity="0" />
+                            <Ellipse x:Name="Thumb" Width="16" Height="16" Fill="{DynamicResource M3.Outline}" />
+                            <TextBlock x:Name="Check" Style="{StaticResource M3.Icon}" FontSize="12" Text="&#xE73E;"
+                                       Foreground="{DynamicResource M3.OnPrimaryContainer}" Visibility="Collapsed" />
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Move" Storyboard.TargetProperty="X" To="20" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Move" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="Track" Property="Background" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Thumb" Property="Width" Value="24" />
+                            <Setter TargetName="Thumb" Property="Height" Value="24" />
+                            <Setter TargetName="Thumb" Property="Fill" Value="{DynamicResource M3.OnPrimary}" />
+                            <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Halo" Property="Fill" Value="{DynamicResource M3.Primary}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Halo" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Thumb" Property="Width" Value="28" />
+                            <Setter TargetName="Thumb" Property="Height" Value="28" />
+                            <Setter TargetName="Halo" Property="Opacity" Value="0.10" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Focus" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Casilla (18×18, radio 2) ===== -->
+    <Style x:Key="M3.CheckBox" TargetType="CheckBox">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid x:Name="Root" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Ellipse x:Name="Halo" Width="40" Height="40" Fill="{DynamicResource M3.OnSurface}" Opacity="0" />
+                        <Ellipse x:Name="Focus" Width="40" Height="40" Stroke="{DynamicResource M3.Secondary}" StrokeThickness="3" Visibility="Collapsed" />
+                        <Border x:Name="Box" Width="18" Height="18" CornerRadius="2" BorderThickness="2"
+                                BorderBrush="{DynamicResource M3.OnSurfaceVariant}" Background="Transparent">
+                            <TextBlock x:Name="Mark" Style="{StaticResource M3.Icon}" FontSize="12" Text="&#xE73E;"
+                                       Foreground="{DynamicResource M3.OnPrimary}" Visibility="Collapsed" />
+                        </Border>
+                        <ContentPresenter Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Mark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Halo" Property="Fill" Value="{DynamicResource M3.Primary}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Halo" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Halo" Property="Opacity" Value="0.10" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Focus" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Botones segmentados (alto 40, borde Outline, seleccionado = SecondaryContainer con check) ===== -->
+    <Style x:Key="M3.Segment" TargetType="RadioButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid x:Name="Root">
+                        <Border x:Name="Container" BorderBrush="{DynamicResource M3.Outline}" BorderThickness="1,1,0,1" CornerRadius="0" Background="Transparent" />
+                        <Border x:Name="State" Background="{DynamicResource M3.OnSurface}" Opacity="0" CornerRadius="0" />
+                        <Border x:Name="Focus" BorderBrush="{DynamicResource M3.Secondary}" BorderThickness="3" Visibility="Collapsed" CornerRadius="0" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
+                            <TextBlock x:Name="Check" Style="{StaticResource M3.Icon}" FontSize="13" Text="&#xE73E;" Margin="0,0,8,0" Visibility="Collapsed"
+                                       Foreground="{DynamicResource M3.OnSecondaryContainer}" />
+                            <TextBlock x:Name="Icon" Style="{StaticResource M3.Icon}" FontSize="15" Margin="0,0,8,0"
+                                       Text="{TemplateBinding m3:M3.Icon}" />
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="m3:M3.Icon" Value="{x:Null}">
+                            <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="m3:M3.Segment" Value="First">
+                            <Setter TargetName="Container" Property="CornerRadius" Value="20,0,0,20" />
+                            <Setter TargetName="State" Property="CornerRadius" Value="20,0,0,20" />
+                            <Setter TargetName="Focus" Property="CornerRadius" Value="20,0,0,20" />
+                        </Trigger>
+                        <Trigger Property="m3:M3.Segment" Value="Last">
+                            <Setter TargetName="Container" Property="CornerRadius" Value="0,20,20,0" />
+                            <Setter TargetName="Container" Property="BorderThickness" Value="1" />
+                            <Setter TargetName="State" Property="CornerRadius" Value="0,20,20,0" />
+                            <Setter TargetName="Focus" Property="CornerRadius" Value="0,20,20,0" />
+                        </Trigger>
+                        <Trigger Property="m3:M3.Segment" Value="Only">
+                            <Setter TargetName="Container" Property="CornerRadius" Value="20" />
+                            <Setter TargetName="Container" Property="BorderThickness" Value="1" />
+                            <Setter TargetName="State" Property="CornerRadius" Value="20" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Container" Property="Background" Value="{DynamicResource M3.SecondaryContainer}" />
+                            <Setter Property="Foreground" Value="{DynamicResource M3.OnSecondaryContainer}" />
+                            <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Focus" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Riel de navegación: indicador 56×32 en SecondaryContainer, etiqueta debajo ===== -->
+    <Style x:Key="M3.NavItem" TargetType="RadioButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurfaceVariant}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <StackPanel Background="Transparent" Width="80">
+                        <Grid Width="56" Height="32" HorizontalAlignment="Center">
+                            <Border x:Name="Pill" CornerRadius="16" Background="{DynamicResource M3.SecondaryContainer}" RenderTransformOrigin="0.5,0.5" Opacity="0">
+                                <Border.RenderTransform>
+                                    <ScaleTransform x:Name="PillScale" ScaleX="0.4" />
+                                </Border.RenderTransform>
+                            </Border>
+                            <Border x:Name="State" CornerRadius="16" Background="{DynamicResource M3.OnSurface}" Opacity="0" />
+                            <Border x:Name="Focus" CornerRadius="16" BorderThickness="3" BorderBrush="{DynamicResource M3.Secondary}" Margin="-3" Visibility="Collapsed" />
+                            <TextBlock x:Name="Glyph" Style="{StaticResource M3.Icon}" FontSize="18" Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding m3:M3.Icon}" />
+                        </Grid>
+                        <ContentPresenter HorizontalAlignment="Center" Margin="0,4,0,0" TextElement.FontSize="12" TextElement.FontWeight="Medium"
+                                          TextElement.FontFamily="{StaticResource M3.Font}" TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PillScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2">
+                                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="Pill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PillScale" Storyboard.TargetProperty="ScaleX" To="0.4" Duration="0:0:0.1" />
+                                        <DoubleAnimation Storyboard.TargetName="Pill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource M3.OnSecondaryContainer}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Focus" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Slider (track 4, handle vertical 4×44 de M3 expresivo simplificado a 4×28) ===== -->
+    <Style x:Key="M3.SliderThumb" TargetType="Thumb">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Grid Width="20" Height="28" Background="Transparent">
+                        <Border x:Name="Handle" Width="4" Height="28" CornerRadius="2" Background="{DynamicResource M3.Primary}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="Handle" Property="Width" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.SliderRepeat" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border Background="Transparent" Height="28">
+                        <Border Height="6" CornerRadius="3"
+                                Background="{TemplateBinding Background}" VerticalAlignment="Center" Margin="2,0" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.Slider" TargetType="Slider">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid x:Name="Root" MinHeight="28">
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource M3.SliderRepeat}" Command="Slider.DecreaseLarge" Tag="6" Background="{DynamicResource M3.Primary}" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource M3.SliderRepeat}" Command="Slider.IncreaseLarge" Tag="6" Background="{DynamicResource M3.SecondaryContainer}" />
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource M3.SliderThumb}" />
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Indicador lineal (medidores de audio) ===== -->
+    <Style x:Key="M3.LinearProgress" TargetType="ProgressBar">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="Background" Value="{DynamicResource M3.SecondaryContainer}" />
+        <Setter Property="Minimum" Value="0" />
+        <Setter Property="Maximum" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid>
+                        <Border x:Name="PART_Track" CornerRadius="3" Background="{TemplateBinding Background}" />
+                        <Border x:Name="PART_Indicator" CornerRadius="3" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Campo de texto con contorno ===== -->
+    <Style x:Key="M3.TextBox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource M3.Primary}" />
+        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="Padding" Value="14,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid x:Name="Root">
+                        <Border x:Name="Frame" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource M3.Outline}" Background="Transparent" />
+                        <!-- Sin Margin: el TextBox ya aplica su Padding adentro (con los dos quedaba el doble de sangría) -->
+                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Focusable="False" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource M3.OnSurface}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Frame" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Menú desplegable con contorno (ComboBox) ===== -->
+    <Style x:Key="M3.ComboToggle" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.ComboBoxItem" TargetType="ComboBoxItem">
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Grid>
+                        <Border x:Name="Sel" Background="{DynamicResource M3.SecondaryContainer}" Opacity="0" />
+                        <Border x:Name="State" Background="{DynamicResource M3.OnSurface}" Opacity="0" />
+                        <ContentPresenter Margin="12,0" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Sel" Property="Opacity" Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.ComboBox" TargetType="ComboBox">
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource M3.ComboBoxItem}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid x:Name="Root">
+                        <Border x:Name="Frame" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource M3.Outline}" Background="Transparent" />
+                        <ToggleButton Style="{StaticResource M3.ComboToggle}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <ContentPresenter Margin="14,0,40,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
+                        <TextBlock x:Name="Arrow" Style="{StaticResource M3.Icon}" Text="&#xE70D;" FontSize="12" HorizontalAlignment="Right" Margin="0,0,16,0"
+                                   Foreground="{DynamicResource M3.OnSurfaceVariant}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5" />
+                        <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True"
+                               PopupAnimation="Fade" Focusable="False" VerticalOffset="4">
+                            <Border Margin="6,0,6,8" CornerRadius="4" Background="{DynamicResource M3.SurfaceContainer}"
+                                    MinWidth="{Binding ActualWidth, ElementName=Root}" MaxHeight="{TemplateBinding MaxDropDownHeight}" Padding="0,8">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.25" Direction="270" />
+                                </Border.Effect>
+                                <ScrollViewer>
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource M3.OnSurface}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Frame" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource M3.Primary}" />
+                            <Setter TargetName="Frame" Property="BorderThickness" Value="2" />
+                            <Setter TargetName="Arrow" Property="RenderTransform">
+                                <Setter.Value><RotateTransform Angle="180" /></Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Barra de desplazamiento fina ===== -->
+    <Style TargetType="ScrollBar">
+        <Setter Property="Width" Value="8" />
+        <Setter Property="MinWidth" Value="8" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                        <Track.Thumb>
+                            <Thumb>
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <Border x:Name="T" CornerRadius="3" Margin="1,2" Background="{DynamicResource M3.OutlineVariant}" />
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="T" Property="Background" Value="{DynamicResource M3.Outline}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                    </Track>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="Width" Value="Auto" />
+                <Setter Property="Height" Value="8" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Track x:Name="PART_Track">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border CornerRadius="3" Margin="2,1" Background="{DynamicResource M3.OutlineVariant}" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ===== Tooltip simple M3 ===== -->
+    <Style TargetType="ToolTip">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border CornerRadius="4" Background="{DynamicResource M3.InverseSurface}" Padding="8,4" MaxWidth="320">
+                        <ContentPresenter TextElement.Foreground="{DynamicResource M3.InverseOnSurface}" TextElement.FontSize="12"
+                                          TextElement.FontFamily="{StaticResource M3.Font}">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Menú (bandeja) ===== -->
+    <Style x:Key="M3.Menu" TargetType="ContextMenu">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FontFamily" Value="{StaticResource M3.Font}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Margin="8" CornerRadius="4" Background="{DynamicResource M3.SurfaceContainer}" Padding="0,8" MinWidth="220">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.28" Direction="270" />
+                        </Border.Effect>
+                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.MenuItem" TargetType="MenuItem">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource M3.OnSurface}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Grid x:Name="Root" Height="44" Background="Transparent">
+                        <Border x:Name="State" Background="{DynamicResource M3.OnSurface}" Opacity="0" />
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource M3.Icon}" HorizontalAlignment="Left" FontSize="16" Foreground="{DynamicResource M3.OnSurfaceVariant}"
+                                       Text="{TemplateBinding m3:M3.Icon}" />
+                            <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" />
+                            <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="24,0,0,0" VerticalAlignment="Center"
+                                       FontSize="12" Foreground="{DynamicResource M3.OnSurfaceVariant}" />
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="State" Property="Opacity" Value="0.08" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.38" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="M3.MenuSeparator" TargetType="Separator">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Height="1" Margin="0,8" Background="{DynamicResource M3.OutlineVariant}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Divisor -->
+    <Style x:Key="M3.Divider" TargetType="Border">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource M3.OutlineVariant}" />
+    </Style>
+
+</ResourceDictionary>
