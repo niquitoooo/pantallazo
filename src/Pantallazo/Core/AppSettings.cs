@@ -26,6 +26,10 @@ public sealed class AppSettings
 
     // Atajos
     public List<HotkeyBinding> Hotkeys { get; set; } = [.. HotkeyDefaults.Create()];
+    /// <summary>Impr Pant en pausa: Pantallazo no la usa (sola ni con Ctrl/Alt) y Windows la usa como siempre.</summary>
+    public bool PrintScreenPaused { get; set; }
+    /// <summary>Al pausar, Pantallazo la tenía liberada de Recortes: al reactivar se vuelve a liberar.</summary>
+    public bool PrintScreenFreedBeforePause { get; set; }
 
     // Carpetas (null = la predeterminada dentro de Imágenes / Videos)
     public string? ScreenshotsFolder { get; set; }

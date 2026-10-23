@@ -27,32 +27,38 @@ public partial class HomePage : UserControl
 
     private void Refresh()
     {
-        var bindings = _app.Settings.Current.Hotkeys;
-        FullScreenKeys.ItemsSource = Keys(bindings, HotkeyAction.FullScreen);
-        RegionKeys.ItemsSource = Keys(bindings, HotkeyAction.Region);
-        RecordKeys.ItemsSource = Keys(bindings, HotkeyAction.Record);
+        var s = _app.Settings.Current;
+        FullScreenKeys.ItemsSource = Keys(s, HotkeyAction.FullScreen);
+        RegionKeys.ItemsSource = Keys(s, HotkeyAction.Region);
+        RecordKeys.ItemsSource = Keys(s, HotkeyAction.Record);
         UpdateRecording();
         UpdateWarning();
         UpdateEmpty();
     }
 
-    private static List<string> Keys(IEnumerable<HotkeyBinding> bindings, HotkeyAction action)
+    private static List<string> Keys(AppSettings s, HotkeyAction action)
     {
-        var list = bindings.Where(b => b.Action == action && b.Gesture.IsValid).Select(b => b.Gesture.ToString()).ToList();
+        var list = s.Hotkeys.Where(b => b.Action == action && b.Gesture.IsValid)
+            .Select(b => s.PrintScreenPaused && b.Gesture.UsesPrintScreen ? $"{b.Gesture} (en pausa)" : b.Gesture.ToString())
+            .ToList();
         return list.Count > 0 ? list : ["Sin atajo"];
     }
 
     private void UpdateWarning()
     {
         var failed = _app.Hotkeys.Failed.ToList();
+        var paused = _app.Settings.Current.PrintScreenPaused;
         var usesBarePrintScreen = _app.Settings.Current.Hotkeys.Any(b =>
             b.Gesture is { Key: HotkeyGesture.VkPrintScreen, Modifiers: HotkeyModifiers.None });
-        var snipping = usesBarePrintScreen && PrintScreenKey.IsUsedBySnippingTool();
+        // En pausa, que Recortes tenga Impr Pant es justamente lo pedido: no se avisa.
+        var snipping = !paused && usesBarePrintScreen && PrintScreenKey.Windows.IsUsedBySnippingTool();
 
         if (failed.Count == 0 && !snipping)
         {
             WarningCard.Visibility = Visibility.Collapsed;
-            StatusText.Text = "Pantallazo está activo: los atajos funcionan aunque cierres esta ventana.";
+            StatusText.Text = paused
+                ? "Impr Pant está en pausa: Windows la usa como siempre. Se reactiva en Configuración → Atajos de teclado."
+                : "Pantallazo está activo: los atajos funcionan aunque cierres esta ventana.";
             return;
         }
         WarningCard.Visibility = Visibility.Visible;
@@ -126,9 +132,9 @@ public partial class HomePage : UserControl
 
     private void OnFreePrintScreen(object sender, RoutedEventArgs e)
     {
-        if (PrintScreenKey.SetUsedBySnippingTool(false))
+        if (PrintScreenKey.Windows.SetUsedBySnippingTool(false))
         {
-            _app.Hotkeys.Apply(_app.Settings.Current.Hotkeys);
+            _app.ApplyHotkeys();
             ToastWindow.ShowInfo("Impr Pant liberada",
                 "Recortes ya no usa Impr Pant. Si todavía se abre Recortes, cerrá sesión en Windows y volvé a entrar.");
         }

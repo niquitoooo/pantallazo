@@ -21,6 +21,7 @@ public sealed class HotkeyService : IDisposable
     private IReadOnlyList<HotkeyBinding> _bindings = [];
     private int _nextId = 0x5000;
     private bool _suspended;
+    private bool _printScreenPaused;
 
     public event EventHandler<HotkeyAction>? Pressed;
     public event EventHandler? StatusChanged;
@@ -47,9 +48,11 @@ public sealed class HotkeyService : IDisposable
     /// <summary>Error de Windows del último intento por asignación (para explicar el fallo).</summary>
     public Dictionary<HotkeyBinding, string> FailureReasons { get; } = [];
 
-    public void Apply(IReadOnlyList<HotkeyBinding> bindings)
+    /// <summary><paramref name="printScreenPaused"/>: las combinaciones con Impr Pant no se registran (quedan para Windows).</summary>
+    public void Apply(IReadOnlyList<HotkeyBinding> bindings, bool printScreenPaused = false)
     {
         _bindings = bindings;
+        _printScreenPaused = printScreenPaused;
         if (!_suspended) RegisterAll();
         else
         {
@@ -84,6 +87,11 @@ public sealed class HotkeyService : IDisposable
             if (!b.Gesture.IsValid)
             {
                 _status[b] = HotkeyStatus.NotConfigured;
+                continue;
+            }
+            if (_printScreenPaused && b.Gesture.UsesPrintScreen)
+            {
+                _status[b] = HotkeyStatus.Paused;
                 continue;
             }
             if (!seen.Add(b.Gesture))

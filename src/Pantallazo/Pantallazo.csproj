@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>Pantallazo</RootNamespace>
     <AssemblyName>Pantallazo</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product>Pantallazo</Product>
     <Description>Capturas y grabación de pantalla</Description>
     <ApplicationManifest>app.manifest</ApplicationManifest>

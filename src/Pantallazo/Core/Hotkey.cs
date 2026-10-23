@@ -34,6 +34,10 @@ public readonly record struct HotkeyGesture(HotkeyModifiers Modifiers, int Key)
     [JsonIgnore]
     public bool IsValid => Key != 0 && !KeyNames.IsModifierKey(Key);
 
+    /// <summary>Impr Pant sola o con modificadores: lo que se suelta al pausar Impr Pant.</summary>
+    [JsonIgnore]
+    public bool UsesPrintScreen => Key == VkPrintScreen;
+
     public override string ToString() => KeyNames.Format(this);
 }
 
@@ -44,6 +48,7 @@ public enum HotkeyStatus
     NotConfigured,
     Registered,
     Failed,
+    Paused,
 }
 
 public static class HotkeyDefaults

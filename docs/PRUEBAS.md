@@ -5,9 +5,10 @@ GPU integrada AMD, más una GPU NVIDIA dedicada sin monitores; enchufada. Micró
 
 ## Automáticas
 
-`dotnet test Pantallazo.slnx`: **87 en verde** (21 de la app: atajos, nombres, geometría del selector, color M3 y
-contraste, configuración; 66 del motor: rejilla de cuadros, tamaños y bitrate, mezclador, conversión de audio,
-nombres, lienzo de monitores, encoder).
+`dotnet test Pantallazo.slnx`: **131 en verde** (63 de la app: atajos, nombres, geometría del selector, color M3 y
+contraste, configuración, `Impr Pant` (anotación del original, restaurar, pausa, atajos en pausa); 68 del motor:
+rejilla de cuadros, tamaños y bitrate, mezclador, conversión de audio, nombres, lienzo de monitores, encoder). Las
+pruebas de `Impr Pant` usan el registro real pero en una clave propia que se borra al terminar.
 
 ## Reales (con la app compilada, teclado y mouse simulados con `keybd_event`/`mouse_event` y UI Automation)
 
@@ -43,6 +44,8 @@ nombres, lienzo de monitores, encoder).
 | 27 | Nombres predeterminados nuevos | Una configuración con las plantillas viejas sin tocar pasa sola a `Captura_{hh}-{min}-{ss}_{dd}-{mm}-{aaaa}` y `Grabación_{hh}-{min}-{ss}_{dd}-{mm}-{aaaa}`; con atajos salieron `Captura_00-36-37_18-10-2026.png` y `Grabación_00-36-40_18-10-2026.mp4`. Una plantilla propia se respeta (test) |
 | 28 | Recientes = las carpetas | Al abrir aparecen los archivos de las dos carpetas aunque no los haya hecho esta copia de Pantallazo; un PNG creado desde afuera aparece solo y un `.png.tmp` no; mandarlo a la Papelera lo saca. Cambiando la carpeta de capturas en Configuración (diálogo de Windows), la lista pasa a la carpeta nueva al instante y una captura nueva aparece ahí; «volver a la predeterminada» vuelve a la de siempre |
 | 29 | Predeterminadas `Captura {n}` / `Grabacion {n}` | Una configuración con las predeterminadas anteriores pasa sola a las nuevas. Con `Captura 001.png` y `Grabacion 001.mp4` ya en las carpetas, Impr Pant y Alt + Impr Pant dieron `Captura 002.png` y `Grabacion 002.mp4` (saltean el número usado); el ejemplo de Configuración coincide con el archivo que sale |
+| 30 | Pausar `Impr Pant` (1.1.0, app instalada, clics reales en el interruptor de Configuración) | Liberada → pausar: el valor vuelve al original anotado (se escribe 1, lo predeterminado de Windows 11) y `Impr Pant` abre Recortes al instante; Pantallazo no captura. Reiniciar la app: sigue en pausa. Reactivar: vuelve a 0 y `Impr Pant` captura con Pantallazo. Inicio muestra «en pausa» en los tres atajos |
+| 31 | Borrar el valor en vez de escribirlo | Con el valor borrado después de un 0, Windows siguió con el 0 (Impr Pant no abrió Recortes) hasta otro cambio: por eso restaurar escribe lo predeterminado en vez de borrar |
 
 ## Rendimiento medido
 
@@ -81,6 +84,10 @@ nombres, lienzo de monitores, encoder).
   desconectado pasa a silencio (con aviso) y no se reconecta solo.
 - Grabar "todas las pantallas" con un escritorio de más de 4096×2304 se escala para que entre en el encoder.
 - `Impr Pant` sola puede no llegar si Recortes la tiene asignada (se ofrece liberarla).
+- Después de varias desinstalaciones e instalaciones seguidas en un par de minutos, Explorer (que es el que abre
+  Recortes con `Impr Pant`) dejó de tomar los cambios de la tecla: ni el interruptor de la Configuración de Windows la
+  apagaba. Se arregla reiniciando Explorer o cerrando sesión. En uso normal (pausar, reactivar, una actualización) los
+  cambios se tomaron al instante.
 - Instalador y portable sin firma digital (SmartScreen avisa la primera vez). El asistente usa la traducción al
   español de Inno Setup (neutro, no rioplatense).
 
@@ -92,4 +99,8 @@ nombres, lienzo de monitores, encoder).
 | Reinstalar con la app abierta y **grabando** | OK: la app recibe `--salir`, guarda el video (3,8 MB, sin temporales sueltos), cierra, y se instala encima |
 | Desinstalar con la app abierta | OK: la cierra, borra archivos, carpeta, acceso directo, inicio con Windows y entrada; conserva configuración y grabaciones |
 | App instalada | OK: Impr Pant, región, Esc y clic en ventana |
+| Actualizar de 1.0.0 a 1.1.0 con «liberar Impr Pant» marcada | OK: anota que antes de Pantallazo no había valor (el 0 lo había puesto la 1.0.0) |
+| Actualizar con `Impr Pant` en pausa | OK: el instalador no la libera (lo dice el log) |
+| Desinstalar una instalación que viene de la 1.0.0 | OK: escribe el original antes de procesar el registro de desinstalación viejo (que borra el valor); Impr Pant abre Recortes |
+| Instalación limpia y desinstalación de la 1.1.0 | OK: anota el valor que había al instalar; al desinstalar lo vuelve a poner (1) y borra la anotación |
 | Asistente normal | Se ve en castellano con el ícono de la app (captura revisada) |

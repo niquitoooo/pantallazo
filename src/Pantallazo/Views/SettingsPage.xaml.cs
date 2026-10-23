@@ -47,6 +47,7 @@ public partial class SettingsPage : UserControl
         try
         {
             BuildHotkeys();
+            PausePrintScreenSwitch.IsChecked = S.PrintScreenPaused;
             UpdateSnipping();
             ShotsFolder.Text = _app.Capture.ScreenshotsFolder;
             ShotTemplate.Text = S.ScreenshotNameTemplate;
@@ -249,9 +250,26 @@ public partial class SettingsPage : UserControl
         UpdateSnipping();
     }
 
+    private void OnPausePrintScreen(object sender, RoutedEventArgs e)
+    {
+        var paused = PausePrintScreenSwitch.IsChecked == true;
+        _app.SetPrintScreenPaused(paused);
+        BuildHotkeys();
+        UpdateSnipping();
+        if (paused) ToastWindow.ShowInfo("Impr Pant en pausa", "Windows la usa como siempre hasta que la reactives.");
+        else ToastWindow.ShowInfo("Impr Pant reactivada", "Pantallazo vuelve a usar sus atajos con Impr Pant.");
+    }
+
     private void UpdateSnipping()
     {
-        var used = PrintScreenKey.IsUsedBySnippingTool();
+        // En pausa no se ofrece liberar ni devolver: la tecla queda como la tenía Windows.
+        SnippingButton.Visibility = S.PrintScreenPaused ? Visibility.Collapsed : Visibility.Visible;
+        if (S.PrintScreenPaused)
+        {
+            SnippingText.Text = "Impr Pant está en pausa: la usa Windows, como si Pantallazo no estuviera.";
+            return;
+        }
+        var used = PrintScreenKey.Windows.IsUsedBySnippingTool();
         SnippingText.Text = used
             ? "Impr Pant está asignada a la Herramienta Recortes de Windows; mientras tanto puede no llegar a Pantallazo."
             : "Impr Pant está liberada para Pantallazo (la Herramienta Recortes no la usa).";
@@ -260,8 +278,8 @@ public partial class SettingsPage : UserControl
 
     private void OnToggleSnipping(object sender, RoutedEventArgs e)
     {
-        var used = PrintScreenKey.IsUsedBySnippingTool();
-        if (PrintScreenKey.SetUsedBySnippingTool(!used))
+        var used = PrintScreenKey.Windows.IsUsedBySnippingTool();
+        if (PrintScreenKey.Windows.SetUsedBySnippingTool(!used))
         {
             _app.ApplyHotkeys();
             ToastWindow.ShowInfo(used ? "Impr Pant liberada" : "Impr Pant devuelta a Recortes",

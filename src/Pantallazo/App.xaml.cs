@@ -150,7 +150,19 @@ public partial class App : Application
         if (!silent || !Settings.Current.StartMinimized) ShowMainWindow();
     }
 
-    public void ApplyHotkeys() => Hotkeys.Apply(Settings.Current.Hotkeys);
+    public void ApplyHotkeys() => Hotkeys.Apply(Settings.Current.Hotkeys, Settings.Current.PrintScreenPaused);
+
+    /// <summary>Configuración → "Pausar Impr Pant": en pausa, Windows usa la tecla como si Pantallazo no estuviera.</summary>
+    public void SetPrintScreenPaused(bool paused)
+    {
+        if (Settings.Current.PrintScreenPaused == paused) return;
+        Settings.Update(s =>
+        {
+            if (paused) PrintScreenKey.Windows.Pause(s);
+            else PrintScreenKey.Windows.Resume(s);
+        });
+        ApplyHotkeys();
+    }
 
     private async Task RunAsync(HotkeyAction action)
     {
@@ -217,7 +229,8 @@ public partial class App : Application
             mi.Click += (_, _) => onClick();
             return mi;
         }
-        string? Key(HotkeyAction a) => Settings.Current.Hotkeys.FirstOrDefault(h => h.Action == a && h.Gesture.IsValid)?.Gesture.ToString();
+        string? Key(HotkeyAction a) => Settings.Current.Hotkeys.FirstOrDefault(h => h.Action == a && h.Gesture.IsValid &&
+            !(Settings.Current.PrintScreenPaused && h.Gesture.UsesPrintScreen))?.Gesture.ToString();
         Separator Sep() => new() { Style = (Style)Resources["M3.MenuSeparator"] };
 
         menu.Items.Add(Item("Capturar pantalla completa", Icons.FullScreen, Key(HotkeyAction.FullScreen), async () =>
@@ -258,7 +271,8 @@ public partial class App : Application
             return;
         }
         var failed = Hotkeys.Failed.Count();
-        Tray.SetRecording(false, failed > 0 ? $"Pantallazo - {failed} atajo(s) sin activar" : "Pantallazo");
+        Tray.SetRecording(false, failed > 0 ? $"Pantallazo - {failed} atajo(s) sin activar"
+            : Settings.Current.PrintScreenPaused ? "Pantallazo - Impr Pant en pausa" : "Pantallazo");
     }
 
     // ---------- Salida ----------

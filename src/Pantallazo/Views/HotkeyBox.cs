@@ -60,6 +60,7 @@ public sealed class HotkeyBox : Button
         {
             HotkeyStatus.Registered => "Atajo activo",
             HotkeyStatus.Failed => $"No se pudo activar: {reason ?? "está ocupado"}",
+            HotkeyStatus.Paused => "En pausa: Windows usa Impr Pant",
             _ => "Sin asignar",
         };
         Paint();
@@ -173,6 +174,10 @@ public sealed class HotkeyBox : Button
             case HotkeyStatus.Failed:
                 _status.Text = Icons.Error;
                 _status.SetResourceReference(TextBlock.ForegroundProperty, "M3.Error");
+                break;
+            case HotkeyStatus.Paused:
+                _status.Text = Icons.Pause;
+                _status.SetResourceReference(TextBlock.ForegroundProperty, "M3.OnSurfaceVariant");
                 break;
             default:
                 _status.Text = "";

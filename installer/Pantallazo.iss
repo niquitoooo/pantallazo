@@ -70,9 +70,7 @@ Name: "{autodesktop}\Pantallazo"; Filename: "{app}\Pantallazo.exe"; Tasks: deskt
 ; Mismo valor que escribe la app desde Configuración → "Iniciar con Windows".
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Pantallazo"; \
     ValueData: """{app}\Pantallazo.exe"" --minimizado"; Flags: uninsdeletevalue; Tasks: startup
-; Igual que el instalador de ShareX: Impr Pant deja de abrir Recortes (se deshace al desinstalar o desde la app).
-Root: HKCU; Subkey: "Control Panel\Keyboard"; ValueType: dword; ValueName: "PrintScreenKeyForSnippingEnabled"; \
-    ValueData: 0; Flags: uninsdeletevalue; Tasks: printscreen
+; La tarea "printscreen" (liberar Impr Pant, como el instalador de ShareX) va en [Code]: antes anota cómo estaba.
 
 [Run]
 Filename: "{app}\Pantallazo.exe"; Description: "{cm:LaunchNow}"; Flags: nowait postinstall skipifsilent
@@ -84,6 +82,93 @@ Filename: "{sys}\taskkill.exe"; Parameters: "/im Pantallazo.exe /f"; Flags: runh
 [Code]
 const
   AppMutexName = 'Local\Pantallazo-instancia-unica';
+  KeyboardKey = 'Control Panel\Keyboard';
+  SnippingValue = 'PrintScreenKeyForSnippingEnabled';
+  { Igual que Hotkeys\PrintScreenKey.cs: cómo tenía Windows Impr Pant antes de Pantallazo (0 o 1, o 2 si no existía). }
+  RecordKey = 'Software\Pantallazo';
+  RecordValue = 'ImprPantOriginal';
+  OriginalMissing = 2;
+  { Clave de desinstalación de esta app (AppId de [Setup]): de ahí sale la versión que había antes. }
+  UninstallKey = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{6E0C2F4B-5B8E-4C1F-9A2D-3F7E1B6C9D40}_is1';
+
+var
+  PreviousVersion: String; { '' si Pantallazo no estaba instalado }
+
+function InitializeSetup(): Boolean;
+begin
+  if not RegQueryStringValue(HKEY_CURRENT_USER, UninstallKey, 'DisplayVersion', PreviousVersion) then
+    PreviousVersion := '';
+  Result := True;
+end;
+
+{ Anota cómo tenía Windows Impr Pant antes de que Pantallazo la toque. Solo la primera vez: después no se pisa.
+  La 1.0.0 no anotaba: al actualizar desde ella con la tecla liberada (0), ese 0 lo puso Pantallazo y lo original era
+  lo predeterminado de Windows. }
+procedure RememberPrintScreen();
+var
+  Current, Original: Cardinal;
+begin
+  if RegValueExists(HKEY_CURRENT_USER, RecordKey, RecordValue) then Exit;
+  if not RegQueryDWordValue(HKEY_CURRENT_USER, KeyboardKey, SnippingValue, Current) then
+    Original := OriginalMissing
+  else if Current <> 0 then
+    Original := 1
+  else if PreviousVersion = '1.0.0' then
+    Original := OriginalMissing
+  else
+    Original := 0;
+  RegWriteDWordValue(HKEY_CURRENT_USER, RecordKey, RecordValue, Original);
+  Log(Format('Impr Pant antes de Pantallazo: anotación %d.', [Original]));
+end;
+
+{ Al desinstalar: si Impr Pant sigue liberada (0), la deja como estaba antes de Pantallazo; si alguien ya la devolvió a
+  Recortes, se respeta. Sin anotación, vuelve a lo predeterminado de Windows (en Windows 11, Recortes).
+  Si antes no había valor, se escribe lo predeterminado en vez de borrarlo: borrado, Windows sigue con el 0 que leyó
+  hasta cerrar sesión. Es lo mismo que PrintScreenKey.RestoreOriginal en la app. }
+procedure RestorePrintScreen();
+var
+  Current, Original, Value: Cardinal;
+  Version: TWindowsVersion;
+begin
+  if not RegQueryDWordValue(HKEY_CURRENT_USER, KeyboardKey, SnippingValue, Current) then Exit;
+  if Current <> 0 then Exit;
+  if not RegQueryDWordValue(HKEY_CURRENT_USER, RecordKey, RecordValue, Original) then
+    Original := OriginalMissing;
+  if Original = OriginalMissing then
+  begin
+    GetWindowsVersionEx(Version);
+    if Version.Build >= 22000 then Value := 1 else Value := 0;
+  end
+  else if Original = 0 then
+    Value := 0
+  else
+    Value := 1;
+  RegWriteDWordValue(HKEY_CURRENT_USER, KeyboardKey, SnippingValue, Value);
+  Log(Format('Impr Pant = %d: vuelve a como estaba antes de Pantallazo (anotación %d).', [Value, Original]));
+end;
+
+{ Con Impr Pant en pausa (Configuración de la app), el instalador no la libera: la pausa manda hasta que se reactive. }
+function PrintScreenPausedInApp(): Boolean;
+var
+  Json: AnsiString;
+begin
+  Result := False;
+  if LoadStringFromFile(ExpandConstant('{userappdata}\Pantallazo\settings.json'), Json) then
+    Result := Pos('"PrintScreenPaused": true', Json) > 0;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssInstall then
+    RememberPrintScreen();
+  if (CurStep = ssPostInstall) and WizardIsTaskSelected('printscreen') then
+  begin
+    if PrintScreenPausedInApp() then
+      Log('Impr Pant está en pausa en Pantallazo: no se libera.')
+    else
+      RegWriteDWordValue(HKEY_CURRENT_USER, KeyboardKey, SnippingValue, 0);
+  end;
+end;
 
 { Pide a la instancia abierta que salga (la app espera hasta 20 s a que termine). true = ya no está abierta. }
 function CloseRunningApp(): Boolean;
@@ -113,12 +198,21 @@ begin
     Log('Pantallazo no respondió al pedido de salida; se cierra a la fuerza.');
 end;
 
-{ El valor de "Iniciar con Windows" puede haberlo creado la app (Configuración) y no el instalador: se borra igual. }
+{ El valor de "Iniciar con Windows" y el cambio de Impr Pant pueden venir de la app (Configuración) y no del instalador:
+  se deshacen igual. }
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   Exe: String;
   I: Integer;
 begin
+  { Impr Pant, antes de procesar el registro de desinstalación: si se instaló la 1.0.0 con "liberar Impr Pant", ahí
+    quedó "borrar el valor", y con solo borrarlo Windows seguiría con el 0 hasta cerrar sesión. Escrito antes, Windows
+    toma lo original al instante y el borrado posterior ya no lo cambia. }
+  if CurUninstallStep = usUninstall then
+  begin
+    RestorePrintScreen();
+    RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, RecordKey);
+  end;
   if CurUninstallStep = usPostUninstall then
   begin
     RegDeleteValue(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Pantallazo');

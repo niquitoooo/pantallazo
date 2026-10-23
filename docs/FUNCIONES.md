@@ -49,6 +49,15 @@ Windows 11 puede reservar `Impr Pant` para la Herramienta Recortes. Si pasa, Pan
 *Atajos de teclado* se puede **devolver a Recortes**. Si Windows no toma el cambio enseguida, hay que cerrar sesión y
 volver a entrar.
 
+Pantallazo anota cómo tenía Windows la tecla al instalarse (la versión portable, antes del primer cambio). Al
+desinstalarlo, si la tecla sigue liberada, la deja exactamente así; si ya la habías devuelto a Recortes, no la toca.
+
+**Pausar Impr Pant** (Configuración → *Atajos de teclado*): Pantallazo suelta todos sus atajos con `Impr Pant` (sola,
+con `Ctrl` o con `Alt`) y, si la había liberado, se la devuelve a Windows tal como estaba: en Windows 11, `Impr Pant`
+vuelve a abrir Recortes. Los atajos en pausa se ven con el ícono de pausa y los botones de la ventana y de la bandeja
+siguen andando. La pausa queda guardada hasta reactivarla, aunque se reinicie la PC; al reactivarla, Pantallazo vuelve a
+tomar la tecla como antes.
+
 ---
 
 ## Captura de pantalla completa
@@ -190,7 +199,7 @@ Para que salgan muchos cuadros distintos a 90, 120 o 144 fps conviene tener Wind
 
 | Sección | Opción | Qué hace | De fábrica |
 |---|---|---|---|
-| Atajos de teclado | (ver [Atajos](#atajos-de-teclado)) | Cambiar, agregar alternativas, restaurar, liberar `Impr Pant` | — |
+| Atajos de teclado | (ver [Atajos](#atajos-de-teclado)) | Cambiar, agregar alternativas, restaurar, liberar o pausar `Impr Pant` | — |
 | Carpetas de destino | Capturas de pantalla | *Cambiar*, *Abrir* y ↶ para volver a la predeterminada | `Imágenes\Capturas de pantalla` |
 | | Grabaciones de video | Igual | `Videos\Capturas de video` |
 | Nombres de archivo | Plantilla de capturas y de grabaciones | Ver [Nombres de archivo](#nombres-de-archivo) | `Captura {n}` · `Grabacion {n}` |
@@ -253,8 +262,9 @@ En Configuración → **Nombres de archivo** hay una plantilla para capturas y o
   de una versión anterior conserva la configuración.
 - **Portable** (`Pantallazo-<versión>-win-x64.zip`): se descomprime en cualquier carpeta y se abre `Pantallazo.exe`.
 - Ninguno necesita instalar .NET aparte.
-- **Desinstalar:** desde *Configuración de Windows → Aplicaciones*. Deshace "iniciar con Windows" y "liberar
-  `Impr Pant`" si los habías marcado al instalar. No borra tus capturas ni grabaciones.
+- **Desinstalar:** desde *Configuración de Windows → Aplicaciones*. Deshace "iniciar con Windows" y, si `Impr Pant` sigue
+  liberada, la deja como la tenía Windows antes de Pantallazo (la hayas liberado al instalar o desde la app). No borra tus capturas ni
+  grabaciones.
 - No se pueden abrir dos Pantallazo a la vez: abrirlo de nuevo muestra la ventana del que ya está.
 
 ---

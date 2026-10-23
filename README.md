@@ -61,7 +61,8 @@ Ninguno de los dos necesita instalar .NET. Requiere Windows 10 u 11 de 64 bits.
 > «Windows protegió su PC». Para seguir: **Más información → Ejecutar de todas formas**.
 
 Si en Windows 11 la tecla `Impr Pant` abre la Herramienta Recortes, Pantallazo lo avisa y ofrece liberarla con un
-botón (se puede deshacer desde Configuración).
+botón (se puede deshacer desde Configuración). También se puede **pausar** desde Configuración para que Windows la use
+como siempre hasta reactivarla, y al desinstalar queda como estaba antes de Pantallazo.
 
 ## Capturas
 

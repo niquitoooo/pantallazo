@@ -33,6 +33,16 @@ public class HotkeyTests
     }
 
     [Fact]
+    public void Impr_Pant_cuenta_con_o_sin_modificadores()
+    {
+        Assert.True(new HotkeyGesture(HotkeyModifiers.None, 0x2C).UsesPrintScreen);
+        Assert.True(new HotkeyGesture(HotkeyModifiers.Control, 0x2C).UsesPrintScreen);
+        Assert.True(new HotkeyGesture(HotkeyModifiers.Alt | HotkeyModifiers.Shift, 0x2C).UsesPrintScreen);
+        Assert.False(new HotkeyGesture(HotkeyModifiers.Control | HotkeyModifiers.Shift, 0x78).UsesPrintScreen);
+        Assert.False(HotkeyGesture.None.UsesPrintScreen);
+    }
+
+    [Fact]
     public void Detecta_conflictos_entre_acciones()
     {
         var g = new HotkeyGesture(HotkeyModifiers.Control, 0x2C);
